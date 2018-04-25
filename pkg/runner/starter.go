@@ -15,6 +15,7 @@ type Service struct {
 	GuardInterval   time.Duration
 	GracePeriodOver chan bool
 	GuardActive     bool
+	OverriddenSignal os.Signal
 }
 
 func New(arguments []string) (service *Service) {

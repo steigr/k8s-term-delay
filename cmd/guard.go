@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/steigr/k8s-term-delay/pkg/health"
 	"github.com/steigr/k8s-term-delay/pkg/runner"
-	"strings"
 )
 
 const (
@@ -50,6 +51,21 @@ var (
 			if len(readinessUrl) > 0 {
 				h.SetReadinessUrl(readinessUrl)
 			}
+			if strings.Compare(readinessUrl, "") == 0 {
+				rU := viper.GetString("readiness-url")
+				if rU != "" {
+					readinessUrl = rU
+				}
+			}
+			if len(readinessUrl) > 0 {
+				h.SetReadinessUrl(readinessUrl)
+			}
+			if len(overrideSignal) > 0 {
+				r.SetOverrideSignal(overrideSignal)
+			}
+			if len(viper.GetString("override-signal")) > 0 {
+				r.SetOverrideSignal(viper.GetString("override-signal"))
+			}
 			r.Guard()
 			h.Run()
 			gracePeriodOver := make(chan bool)
@@ -57,18 +73,15 @@ var (
 			<-gracePeriodOver
 		},
 	}
-	livenessUrl, readinessUrl, healthBind string
-	guardInterval                         int
+	livenessUrl, readinessUrl, healthBind, overrideSignal string
+	guardInterval                                         int
 )
 
 func init() {
-	// livenessUrl = viper.GetString("liveness")
-	// log.Println("Got", livenessUrl, "as livenessUrl")
-	// readinessUrl = viper.GetString("readiness-url")
-	// healthBind = viper.GetString("health-bind")
 	guardCmd.Flags().StringVar(&healthBind, "health-bind", "[::]:8081", "healthcheck bind address")
 	guardCmd.Flags().StringVar(&livenessUrl, "liveness-url", "", "actual Livecheck URL")
 	guardCmd.Flags().StringVar(&readinessUrl, "readiness-url", "", "actual Readiness URL")
+	guardCmd.Flags().StringVar(&overrideSignal, "override-signal", "", "substitude INT/TERM/QUIT/HUP with this signal")
 	guardCmd.Flags().IntVar(&guardInterval, "guard-interval", DEFAULT_KTD_GUARD_INTERVAL, "delay until SIGTERM or SIGINT are forwarded to service, the guard claims to be not ready within this interval")
 	rootCmd.AddCommand(guardCmd)
 }

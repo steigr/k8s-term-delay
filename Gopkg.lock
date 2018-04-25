@@ -112,12 +112,6 @@
   revision = "8b1c2da0d56deffdbb9e48d4414b4e674bd8083e"
 
 [[projects]]
-  name = "github.com/sirupsen/logrus"
-  packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
-
-[[projects]]
   name = "github.com/spf13/afero"
   packages = [
     ".",
@@ -158,17 +152,8 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "e73bf333ef8920dbb52ad18d4bd38ad9d9bc76d7"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
+  packages = ["unix"]
   revision = "79b0c6888797020a994db17c8510466c72fe75d9"
 
 [[projects]]
@@ -185,12 +170,6 @@
   version = "v0.3.0"
 
 [[projects]]
-  name = "gopkg.in/vrecan/death.v2"
-  packages = ["."]
-  revision = "8f7e3eef97d09752f62ac09882313583cf1fe9ce"
-  version = "v2.0"
-
-[[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
@@ -199,6 +178,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eec0a4049c97534dfee510c884132cd3ed5719bfe8bdd5898c3cfdf639b5aab3"
+  inputs-digest = "7bc722ee3be3c976b2bee3abd14d490c2f4bdd399b5252704a51e5f102534cdc"
   solver-name = "gps-cdcl"
   solver-version = 1
