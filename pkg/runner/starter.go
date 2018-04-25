@@ -6,27 +6,29 @@ import (
 	"os/exec"
 	"path/filepath"
 	"syscall"
-    "time"
+	"time"
 )
 
 type Service struct {
 	Command         *exec.Cmd
 	Name            string
 	GuardInterval   time.Duration
-    GracePeriodOver chan bool
-    GuardActive     bool
+	GracePeriodOver chan bool
+	GuardActive     bool
 }
 
 func New(arguments []string) (service *Service) {
 	service = &Service{}
 	service.Command = &exec.Cmd{}
 	service.Name = filepath.Base(arguments[0])
-    service.GuardActive = false
+	service.GuardActive = false
 
 	if service.Name == arguments[0] {
 		if lp, err := exec.LookPath(arguments[0]); err == nil {
 			service.Command.Path = lp
 		}
+	} else {
+		service.Command.Path = arguments[0]
 	}
 
 	service.Command.Args = arguments
@@ -35,13 +37,14 @@ func New(arguments []string) (service *Service) {
 }
 
 func (s *Service) Run(gracePeriodOver chan bool) {
-    s.GracePeriodOver = gracePeriodOver
+	s.GracePeriodOver = gracePeriodOver
 	s.Command.Env = os.Environ()
 	s.Command.Stdout = os.Stdout
 	s.Command.Stderr = os.Stderr
-    s.Command.Stdin = os.Stdin
+	// when running in foreground (dev), forward all inputs to guarded service
+	s.Command.Stdin = os.Stdin
 
-    waitCh := make(chan error, 1)
+	waitCh := make(chan error, 1)
 
 	if err := s.Command.Start(); err != nil {
 		log.Fatal(err)
